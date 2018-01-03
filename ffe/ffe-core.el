@@ -94,4 +94,7 @@
   "s-z" 'undo-tree-undo
   "s-X" 'undo-tree-redo)
 
+;; disable ring bell
+(setq ring-bell-function 'ignore)
+
 (provide 'ffe-core)

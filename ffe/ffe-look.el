@@ -16,6 +16,10 @@
   (setq nord-comment-brightness 20)
   (load-theme 'nord t))
 
+;; Bigger initial frame
+(add-to-list 'default-frame-alist '(height . 40))
+(add-to-list 'default-frame-alist '(width . 120))
+
 ;;
 ;; Look & Feel control functions
 ;;

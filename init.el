@@ -43,8 +43,14 @@
           (expand-file-name "init.user.example.el" ffe-directory)
           "0xFFE user configuration.")
 
+        (defvar ffe-custom-file
+          (expand-file-name "custom.el" ffe-directory)
+          "0xFFE user configuration.")
+
         (unless (file-exists-p ffe-user-init-file)
           (copy-file ffe-user-init-example-file ffe-user-init-file))
+        (unless (file-exists-p ffe-custom-file)
+          (write-region "" nil ffe-custom-file))
 
 	;; Make 0xFFE libraries available
 	(add-to-list 'load-path ffe-lib-directory)
@@ -61,4 +67,8 @@
 			 (error-message-string error-data)))))
 
         ;; User post-init
-        (ffe/user-post-init))))
+        (ffe/user-post-init)
+
+        ;; Custom stuff
+        (setq custom-file ffe-custom-file)
+        (load-file ffe-custom-file))))

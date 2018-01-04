@@ -41,7 +41,9 @@
   (exec-path-from-shell-initialize))
 
 ;; Don't show obvious modes
-(use-package diminish)
+(use-package diminish
+  :config
+  (diminish 'auto-revert-mode))
 
 ;; Core emacs configuration
 (use-package better-defaults)

@@ -7,7 +7,6 @@
 (require 'ffe-core)
 
 (use-package undo-tree
-  :diminish
   :general
   (ffe-app-map
    "u" 'undo-tree-visualize)

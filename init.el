@@ -66,9 +66,6 @@
 	    (error (warn "Could not load `%S': %s" feature
 			 (error-message-string error-data)))))
 
-        ;; Hacks
-        (diminish 'auto-revert-mode)
-        
         ;; User post-init
         (ffe/user-post-init)
 

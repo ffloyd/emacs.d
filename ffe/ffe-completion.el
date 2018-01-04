@@ -7,7 +7,6 @@
 (require 'ffe-core)
 
 (use-package ivy
-  :diminish
   :general
 
   ;; Ivy-based interface to standard commands

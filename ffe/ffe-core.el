@@ -3,7 +3,7 @@
 ;;
 ;; 0xFFE core configuration file. It resposible for:
 ;;
-;; * core package management (straight.el, use-package, diminish etc.)
+;; * core package management (straight.el, use-package etc.)
 ;; * core emacs tweaks (better-defaults, no-littering, etc)
 ;; * basic evil setup
 ;; * general.el
@@ -40,9 +40,6 @@
   ;; Initialize PATH from shell
   (exec-path-from-shell-initialize))
 
-;; Don't show obvious modes
-(use-package diminish)
-
 ;; Core emacs configuration
 (use-package better-defaults)
 (use-package no-littering)
@@ -54,7 +51,6 @@
 
 ;; Improve bindings discoverability
 (use-package which-key
-  :diminish
   :config
   (which-key-mode))
 

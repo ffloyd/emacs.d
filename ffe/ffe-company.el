@@ -7,7 +7,6 @@
 (require 'ffe-core)
 
 (use-package company
-  :diminish
   :general
   (company-active-map
     "C-j" 'company-select-next-or-abort

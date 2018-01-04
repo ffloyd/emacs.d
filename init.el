@@ -26,9 +26,6 @@
 	  (expand-file-name "ffe/" ffe-directory)
 	  "Path to the 0xFFE libraries.")
 
-	;; Make 0xFFE libraries available
-	(add-to-list 'load-path ffe-lib-directory)
-
 	;; 0xFFE features list
 	(defvar ffe-features
 	  (mapcar
@@ -38,9 +35,30 @@
 	    ffe-lib-directory nil
 	    "^[a-z-]+\\.el$")))
 
+        (defvar ffe-user-init-file
+          (expand-file-name "init.user.el" ffe-directory)
+          "0xFFE user configuration.")
+
+        (defvar ffe-user-init-example-file
+          (expand-file-name "init.user.example.el" ffe-directory)
+          "0xFFE user configuration.")
+
+        (unless (file-exists-p ffe-user-init-file)
+          (copy-file ffe-user-init-example-file ffe-user-init-file))
+
+	;; Make 0xFFE libraries available
+	(add-to-list 'load-path ffe-lib-directory)
+
+        ;; User pre-init
+	(load-file ffe-user-init-file)
+        (ffe/user-pre-init)
+        
 	;; Load features
 	(dolist (feature ffe-features)
 	  (condition-case-unless-debug error-data
 	      (require feature)
 	    (error (warn "Could not load `%S': %s" feature
-			 (error-message-string error-data))))))))
+			 (error-message-string error-data)))))
+
+        ;; User post-init
+        (ffe/user-post-init))))

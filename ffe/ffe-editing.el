@@ -18,4 +18,12 @@
   :config
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
+;; linum
+(general-def ffe-toggle-map
+  "n" 'linum-mode)
+(use-package linum-relative
+  :general
+  (ffe-toggle-map
+   "N" 'linum-relative-toggle))
+
 (provide 'ffe-editing)

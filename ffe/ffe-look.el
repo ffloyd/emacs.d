@@ -27,6 +27,21 @@
 (add-to-list 'default-frame-alist '(height . 40))
 (add-to-list 'default-frame-alist '(width . 120))
 
+;; Window numbers
+(use-package winum
+  :general
+  (general-nmap
+   :prefix ffe-leader-normal
+   "0" 'winum-select-window-0
+   "1" 'winum-select-window-1
+   "2" 'winum-select-window-2
+   "3" 'winum-select-window-3
+   "4" 'winum-select-window-4
+   "5" 'winum-select-window-5
+   "6" 'winum-select-window-6)
+  :config
+  (winum-mode))
+
 ;; Powerline
 (use-package spaceline
   :config

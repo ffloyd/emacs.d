@@ -32,6 +32,11 @@
 (setq straight-use-package-by-default t)
 (setq use-package-always-demand t)
 
+(use-package benchmark-init
+  :config
+  ;; To disable collection of benchmark data after init is done.
+  (add-hook 'after-init-hook 'benchmark-init/deactivate))
+
 ;; Better ENV-variables management
 (use-package exec-path-from-shell
   :config

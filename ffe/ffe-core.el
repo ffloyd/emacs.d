@@ -93,4 +93,7 @@
 ;; disable ring bell
 (setq ring-bell-function 'ignore)
 
+;; benchmarking initialization
+(use-package esup)
+
 (provide 'ffe-core)

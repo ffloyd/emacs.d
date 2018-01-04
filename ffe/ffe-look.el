@@ -44,10 +44,15 @@
 
 ;; Powerline
 (use-package spaceline
+  :general
+  (ffe-toggle-map
+   "m" 'spaceline-toggle-minor-modes)
   :config
   (require 'spaceline-config)
+
   (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
-  (spaceline-spacemacs-theme))
+  (spaceline-spacemacs-theme)
+  (spaceline-toggle-minor-modes-off))
 
 ;; Dashboard
 (use-package dashboard

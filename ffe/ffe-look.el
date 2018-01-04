@@ -11,9 +11,16 @@
 (set-frame-font "Source Code Pro 13" nil t)
 
 ;; Nord clean arctic theme
+;; Many useful options accessible only via develop branch =(
 (use-package nord-theme
+  :straight
+  (nord-theme
+   :type git
+   :host github
+   :repo "arcticicestudio/nord-emacs"
+   :branch "develop")
   :config
-  (setq nord-comment-brightness 20)
+  (setq nord-comment-brightness 13)
   (load-theme 'nord t))
 
 ;; Bigger initial frame

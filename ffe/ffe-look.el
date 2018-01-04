@@ -34,6 +34,11 @@
   (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
   (spaceline-spacemacs-theme))
 
+;; Dashboard
+(use-package dashboard
+  :config
+  (dashboard-setup-startup-hook))
+
 ;;
 ;; Look & Feel control functions
 ;;

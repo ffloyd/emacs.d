@@ -1,6 +1,7 @@
 ;;; ffe-config.el --- 0xFFE configuration framework
 
 (require 'cl-lib)
+(require 'subr-x)
 
 (defvar ffe-config-alist
   nil
@@ -14,6 +15,10 @@
   nil
   "List of failed to load ffe-config definitions.")
 
+(defmacro ffe-config-message (scope message &rest args)
+  `(let ((base-message (format-message ,message ,@args)))
+     (message "ffe-config[%S]: %s" ,scope base-message)))
+
 (cl-defmacro ffe-config (name
                          docstring
                          &rest argplist
@@ -21,12 +26,15 @@
   "Append new config to ffe-config-alist."
 
   (let ((built-plist `(:docstring ,docstring
-                                  :deps ',deps
+                                  :deps ,deps
                                   :init (lambda () ,init)
-                                  :packages ',packages
+                                  :packages ,packages
                                   :config (lambda () ,config))))
                      
-    `(push (cons ',name ',built-plist) ffe-config-alist)))
+    `(progn
+       (ffe-config-message ',name ,docstring)
+       (push (cons ',name ',built-plist) ffe-config-alist)
+       (ffe-config-message ',name "Defined."))))
 
 (defun ffe-config-p (symbol)
   "Checks config existanse."
@@ -41,50 +49,65 @@
 (defun ffe-config-load (name)
   "Load config with given name and its dependencies."
 
-  (if-let ((config-plist (alist-get name ffe-config-alist)))
-      (condition-case error-cons
-          (ffe-config-load--process-plist config-plist)
-        (error
-         (warn "Error %S happened while loading %S[%s]: %s"
-               (car error-cons)
-               name
-               (plist-get :docstring config-plist)
-               (cdr error-cons))
-         nil))
-    (error "Configuration %S not found" name)))
+  (if (ffe-config-loaded-p name)
+      t
+
+    (ffe-config-message name "Loading...")
+    (if-let ((config-plist (alist-get name ffe-config-alist)))
+        (condition-case error-cons
+            (ffe-config-load--process-plist config-plist name)
+          (error
+           (ffe-config-message name "Config loading error %S: %s"
+                               (car error-cons)
+                               (cdr error-cons))
+           (push name ffe-config-failed-list)
+           nil))
+      (error "Configuration %S not found" name))))
 
 (defun ffe-config-load-all ()
-  "Loads all defined unloaded configurations."
+  "Loads all defined unloaded configurations in order of definition."
 
-  (dolist (config-cons ffe-config-alist)
+  (dolist (config-cons (reverse ffe-config-alist))
     (let ((config-name (car config-cons)))
       (ffe-config-load config-name))))
           
   
-(defun ffe-config-load--process-plist (plist)
+(defun ffe-config-load--process-plist (plist name)
   "Usafe execution of config PLIST"
   
   ;; load dependencies
-  (when-let ((deps (plist-get :deps plist)))
-    (dolist (config-name deps) (ffe-config-load config-name)))
+  (when-let ((deps (plist-get plist :deps)))
+    (ffe-config-message name "Checking and loading deps: %S..." deps)
+    (cl-mapc #'ffe-config-load deps))
         
   ;; starts init
-  (when-let ((init-fun (plist-get :init plist)))
+  (when-let ((init-fun (plist-get plist :init)))
+    (ffe-config-message name "Initialization...")
     (funcall init-fun))
         
   ;; process packages
-  (when-let ((recepies (plist-get :packages plist)))
-    (if (featurep 'straight)
-        (dolist (recepie packages) #'straight-use-package)
-      (error "Straight uninitialized")))
-    
+  (when-let ((packages (plist-get plist :packages)))
+    (ffe-config-message name "Checking and loading packages: %S..." packages)
+    (if (functionp 'straight-use-package)
+        (cl-mapc #'ffe-config--process-package packages)
+      (error "Straight.el uninitialized")))
+
   ;; process config
-  (when-let ((config-fun (plist-get :config plist)))
+  (when-let ((config-fun (plist-get plist :config)))
+    (ffe-config-message name "Configuration...")
     (funcall config-fun))
 
   ;; mark as loaded
   (push name ffe-config-loaded-list)
+    
+  (ffe-config-message name "Loaded.")
 
   t)
+
+(defun ffe-config--process-package (package)
+  "Loads and requires package."
+
+  (straight-use-package package)
+  (require package))
 
 (provide 'ffe-config)

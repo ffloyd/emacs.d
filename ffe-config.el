@@ -108,6 +108,8 @@
   "Loads and requires package."
 
   (straight-use-package package)
-  (require package))
+  (if (listp package)
+      (require (car package))
+    (require package)))
 
 (provide 'ffe-config)
